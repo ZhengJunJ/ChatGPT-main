@@ -188,6 +188,17 @@ hello_chatbot = Chatbot(config, conversation_id=None)
 
 class MainHandler(tornado.web.RequestHandler):
 
+    def __init__(self, *argc, **argkw):
+        super(MainHandler, self).__init__(*argc, **argkw)
+
+    # 解决跨域问题
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")  # 这个地方可以写域名
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+        self.set_header("Access-Control-Max-Age", 1000)
+        self.set_header("Content-type", "application/json")
+
     def get(self):
         question = self.get_argument('question')
         response = hello_chatbot.get_chat_response(str(question), output="stream")
